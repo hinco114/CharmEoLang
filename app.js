@@ -5,8 +5,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// routes 연결
+var challenge = require('./routes/challenge');
+var rank = require('./routes/rank');
+var reward = require('./routes/reward');
 var index = require('./routes/index');
-var users = require('./routes/users');
+
 
 var app = express();
 
@@ -22,8 +26,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
+// URI 를 Routes 에 연결
+app.use('/api/0.1v/', challenge);
+app.use('/api/0.1v/', rank);
+app.use('/api/0.1v/', reward);
+app.use('/api/0.1v/', index);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

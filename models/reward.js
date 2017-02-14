@@ -1,3 +1,4 @@
+'use strict';
 
 module.exports = function(sequelize, DataTypes) {
     var reward = sequelize.define('reward', {
@@ -6,6 +7,8 @@ module.exports = function(sequelize, DataTypes) {
         , challenge_idx : { type : DataTypes.INTEGER.UNSIGNED}
         , fish_idx : { type : DataTypes.INTEGER.UNSIGNED}
         , reward_count : { type : DataTypes.INTEGER.UNSIGNED}
+        , createdAt : { type : DataTypes.DATE}
+        , updatedAt : { type : DataTypes.DATE}
     }, {
         // created time, update time 자동 추가 여부
         timestamps: true,

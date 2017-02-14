@@ -1,36 +1,36 @@
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 
 var async = require('async');
 var models = require('../models');
 var passport = require('passport');
-var auth = require('./auth');
-
 var bodyParser = require('body-parser');
 
 
 //챌린지 생성
-router.post('/challanges/', regisChall);
+router.post('/challenges/', regisChall);
 
 //챌린지 종료
-router.put('/challanges/{:Cidx}', completChall );
+router.put('/challenges/{:Cidx}', completChall );
 
 //특정회원의 특정기간 챌린지 조회
-router.get('/challanges/{:useridx}', challList);
+router.get('/challenges/{:useridx}', challList);
 
 
 
 function regisChall(req, res) {
     var chall_info = req.body;
     var result = {
-        challange_id : null,
+        challenge_id : null,
         status : null,
         reason : null
     }
     
-    model.challange.create(chall_info).then(function(ret) {
+    model.challenge.create(chall_info).then(function(ret) {
         console.log(ret);
-        result.challange_id = ret.challange_id;
+        result.challenge_id = ret.challenge_id;
         result.status = 'S';
         res.json(result);
     }, function(err) {
@@ -48,18 +48,18 @@ function completChall(req, res){
         reason : null
     }
     
-    model.challange.update(chall_info).then(function(ret) {
+    model.challenge.update(chall_info).then(function(ret) {
         console.log(ret);
         var now = new Date();
-        var stime = new Date(ret.challange_stime);    
+        var stime = new Date(ret.challenge_stime);
         var enduretime = now.getTime() - stime.getTime();
         
-        if(enduretime > ret.challange_goeltime){
-            ret.challange_playchecker = 1;     result.status = 'S';
+        if(enduretime > ret.challenge_goeltime){
+            ret.challenge_playchecker = 1;     result.status = 'S';
             res.json(result);
         }
         else{            
-            ret.challange_playchecker = 0;
+            ret.challenge_playchecker = 0;
             result.status = 'F';
             res.json(result);
         }
@@ -80,15 +80,15 @@ function challList(req, res) {
     var result = {
         status : null,
         reason : null,
-        data[] : null
+        data : null
     } 
     
     // 보류요 ..
-    models.challange.findAll({ where :  { id: [user_id] } }).then(function(ret){
+    models.challenge.findAll({ where :  { id: [user_id] } }).then(function(ret){
 		if(ret.length == null) {
 			res.status(400);
 			result.status = 'F';
-			result.reason = 'not find challange';
+			result.reason = 'not find challenge';
 			res.json(result);
 		}     // 챌린지가 없음
         else {

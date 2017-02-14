@@ -1,9 +1,11 @@
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 var async = require('async');
 var models = require('../models');
 var passport = require('passport');
-var auth = require('./auth');
+// var auth = require('./auth');
 
 
 //특정 유저의 리워드 조회
@@ -15,7 +17,7 @@ function rewardList(req,res) {
     var result = {
         status : null,
         reason : null,
-        data[] : null
+        data : null
     }   
     models.reward.findAll(idx).then(function(ret){
 		if(ret == null) {
@@ -26,7 +28,7 @@ function rewardList(req,res) {
 		} else {
 			console.log(ret);
 			result.status = 'S';
-            data = ret;
+            result.data = ret;
 			res.json(result);
 		}
 	}, function(err) {
@@ -37,10 +39,6 @@ function rewardList(req,res) {
 			res.json(result);
 		})
 }
-    
-    
-}
-
 
 
 

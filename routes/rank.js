@@ -1,9 +1,11 @@
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 var async = require('async');
 var models = require('../models');
 var passport = require('passport');
-var auth = require('./auth');
+// var auth = require('./auth');
 
 
 // 랭킹 조회
@@ -15,12 +17,12 @@ function ranksList(req,res) {
     var result = {
         status : null,
         reason : null,
-        data[] : null
+        data : null
     }   
     models.rank.findAll(idx).then(function(ret){
         console.log(ret);
         result.status = 'S';
-        data = ret;
+        result.data = ret;
 		res.json(result);		
 	}, function(err) {
 			console.log(err);
@@ -31,13 +33,5 @@ function ranksList(req,res) {
 		})
 }
     
-    
-}
-
-
-
-
-
-
 
 module.exports = router;
