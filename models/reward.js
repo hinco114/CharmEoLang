@@ -6,13 +6,15 @@ module.exports = function(sequelize, DataTypes) {
         , user_idx : { type : DataTypes.INTEGER.UNSIGNED}
         , challenge_idx : { type : DataTypes.INTEGER.UNSIGNED}
         , fish_idx : { type : DataTypes.INTEGER.UNSIGNED}
-        , reward_count : { type : DataTypes.INTEGER.UNSIGNED}
         , createdAt : { type : DataTypes.DATE}
         , updatedAt : { type : DataTypes.DATE}
     }, {
+        classMethods : {}
+        , instanceMethods : {}
         // created time, update time 자동 추가 여부
-        timestamps: true,
-        tableName: 'reward'
+        , timestamps: true
+        , tableName: 'reward'
+        , collate: 'utf8_unicode_ci'
     });
     return reward;
 };

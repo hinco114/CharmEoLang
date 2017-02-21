@@ -6,9 +6,12 @@ module.exports = function(sequelize, DataTypes) {
         , user_idx : { type : DataTypes.INTEGER.UNSIGNED}
         , kakao_token : { type : DataTypes.STRING(64), unique : true}
     }, {
+        classMethods : {}
+        , instanceMethods : {}
         // created time, update time 자동 추가 여부
-        timestamps: false,
-        tableName: 'kakao_user'
+        , timestamps: true
+        , tableName: 'kakao_user'
+        , collate: 'utf8_unicode_ci'
     });
     return kakao_user;
 };

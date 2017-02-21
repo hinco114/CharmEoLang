@@ -11,6 +11,8 @@ var ResultModel = function(status, reason, data) {
     this.resultData = data;
 };
 
+router.get('/test3', getTest);
+
 /* GET home page. */
 router.get('/', function(req, res) {
     models.sequelize
@@ -42,6 +44,8 @@ router.get('/test', function (req, res) {
     })
 })
 
+
+
 router.get('/test2/:id', function (req, res) {
     models.challenge.findById(req.params.id).then(function (ret) {
         if(ret == null) { }
@@ -50,5 +54,14 @@ router.get('/test2/:id', function (req, res) {
         res.status(400).json(new ResultModel('F', err.message, null));
     })
 })
+
+function getTest(req, res) {
+    var where = { where : req.query };
+    models.challenge.findAll(where).then(function (ret) {
+        res.status(200).json(new ResultModel('S', null, ret));
+    }, function(err) {
+        res.status(400).json(new ResultModel('F', err.message, null));
+    })
+}
 
 module.exports = router;

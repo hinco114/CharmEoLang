@@ -7,9 +7,12 @@ module.exports = function(sequelize, DataTypes) {
         , basic_id : { type : DataTypes.STRING(64), unique : true}
         , basic_password : { type : DataTypes.STRING(64)}
     }, {
+        classMethods : {}
+        , instanceMethods : {}
         // created time, update time 자동 추가 여부
-        timestamps: false,
-        tableName: 'basic_user'
+        , timestamps: true
+        , tableName: 'basic_user'
+        , collate: 'utf8_unicode_ci'
     });
     return basic_user;
 };
