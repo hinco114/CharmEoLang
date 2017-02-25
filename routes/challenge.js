@@ -23,14 +23,14 @@ router.get('/challenges/{:useridx}', challList);
 function regisChall(req, res) {
     var chall_info = req.body;
     var result = {
-        challenge_id : null,
+        challenge_idx : null,
         status : null,
         reason : null
     }
     
-    model.challenge.create(chall_info).then(function(ret) {
+    models.challenge.create(chall_info).then(function(ret) {
         console.log(ret);
-        result.challenge_id = ret.challenge_id;
+        result.challenge_idx = ret.challenge_idx;
         result.status = 'S';
         res.json(result);
     }, function(err) {
@@ -48,7 +48,7 @@ function completChall(req, res){
         reason : null
     }
     
-    model.challenge.update(chall_info).then(function(ret) {
+    models.challenge.update(chall_info).then(function(ret) {
         console.log(ret);
         var now = new Date();
         var stime = new Date(ret.challenge_stime);
