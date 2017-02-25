@@ -10,7 +10,7 @@ module.exports = function(sequelize, DataTypes) {
         classMethods : {}
         , instanceMethods : {}
         // created time, update time 자동 추가 여부
-        , timestamps: true
+        , timestamps: false
         , tableName: 'basic_user'
         , collate: 'utf8_unicode_ci'
     });

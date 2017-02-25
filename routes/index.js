@@ -19,7 +19,7 @@ router.get('/', function(req, res) {
         .authenticate()
         .then(function(err) {
             console.log('Connection has been established successfully.');
-            res.status(200).json(new ResultModel('S', 'Seccessfully Registered !'));
+            res.status(200).json(new ResultModel('S', 'Seccessfully Connected!'));
         })
         .catch(function (err) {
             console.log('Unable to connect to the database:', err);
