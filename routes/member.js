@@ -24,8 +24,7 @@ function resultFunc(err, result, res) {
 
 router.post('/members/basic', creBasic);
 router.post('/members/kakao', creKakao);
-router.get('/members/', getAllUser);
-router.get('/members/{:userIdx}', getUser);
+router.get('/members/:user_idx', getUser);
 
 // basic_user 생성 waterfall
 function creBasic(req, res) {
@@ -46,7 +45,7 @@ function creBasic(req, res) {
 function creKakao(req, res) {
     async.waterfall([
             async.constant(req)     // req를 첫번째 단계로 넘김
-            , existToken          // kakao_token 중복 검사
+            , existToken            // kakao_token 중복 검사
             , existNick             // Nickname 중복 검사
             , newKakaoUser          // basic_user 생성
             , newUser               // user_info 생성
@@ -57,16 +56,25 @@ function creKakao(req, res) {
         })
 }
 
-
-function getAllUser(req, res) {
-    var data;
-    if(req.query.offset != null) {
-    }
-}
-
-
+// 특정유저 정보 얻기 (시간값이 현재 이상하게 리턴되는 현상)
 function getUser(req, res) {
-
+    async.waterfall([
+        async.constant(req)
+        , function (req, callback) {
+        models.user_info.findById(req.params.user_idx).then(function (ret) {
+            if(ret==null){
+                callback({message: 'User not found'});
+            }
+            else {
+                callback(null, ret);
+            }
+        }, function (err) {
+            callback(err);
+        })
+    }
+    ], function(err, result) {
+        resultFunc(err, result, res)
+    })
 }
 
 ///////////////////////////////////////////////////////////
@@ -154,19 +162,19 @@ function newUser(req, data, callback) {
 
 // basic / kakao db에 user_idx 업데이트
 function updateUserTypeIdx(data, callback) {
-    var target = {user_idx: data.user_idx};
+    var context = {user_idx: data.user_idx};
     var where = {where: ''};
     if (data.user_type == 'basic') {
         where.where = {buser_idx: data.usertype_idx};
-        models.basic_user.update(target, where).then(function (ret) {
-            callback(null, target)
+        models.basic_user.update(context, where).then(function (ret) {
+            callback(null, context)
         }), function (err) {
             callback(err.message);
         }
     } else if (data.user_type == 'kakao') {
         where.where = {kakao_idx: data.usertype_idx};
-        models.kakao_user.update(target, where).then(function (ret) {
-            callback(null, target)
+        models.kakao_user.update(context, where).then(function (ret) {
+            callback(null, context)
         }), function (err) {
             callback(err.message);
         }

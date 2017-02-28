@@ -6,6 +6,7 @@ module.exports = function(sequelize, DataTypes) {
         , user_idx : { type : DataTypes.INTEGER.UNSIGNED}
         , challenge_idx : { type : DataTypes.INTEGER.UNSIGNED}
         , fish_idx : { type : DataTypes.INTEGER.UNSIGNED}
+        , fish_memo : { type : DataTypes.STRING(45)}
         , createdAt : { type : DataTypes.DATE}
         , updatedAt : { type : DataTypes.DATE}
     }, {
