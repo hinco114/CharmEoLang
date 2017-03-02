@@ -2,8 +2,9 @@
   "development": {
     "username": "user",
     "password": "86400asd",
-    "database": "ddtest2",
+    "database": "ddtest3",
     "host": "dd.czpdgzbo1o9g.ap-northeast-2.rds.amazonaws.com",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "Asia/Seoul"  
   }
 }
