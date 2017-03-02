@@ -27,8 +27,7 @@ router.post('/members/basic', creBasic);
 router.post('/members/kakao', creKakao);
 router.post('/members/login', login);
 router.get('/members/:user_idx', getUser);
-router.get('/members', getUser);
-
+// router.get('/members', getUser);
 
 // basic_user 생성 waterfall
 function creBasic(req, res) {
@@ -86,7 +85,7 @@ function getUser(req, res) {
 
 function findUser(req, callback) {
     var target;
-    if(req.params.user_idx == null) {
+    if (req.params.user_idx == null) {
         target = req.headers.user_idx;
     } else {
         target = req.params.user_idx;
@@ -96,6 +95,12 @@ function findUser(req, callback) {
             callback({message: 'User not found'});
         }
         else {
+            var ct = new Date(ret.dataValues.createdAt);
+            var ut = new Date(ret.dataValues.updatedAt);
+            ct.setHours(ct.getHours() + 9);
+            ut.setHours(ut.getHours() + 9);
+            ret.dataValues.createdAt = ct;
+            ret.dataValues.updatedAt = ut.toISOString();
             callback(null, req, ret);
         }
     }, function (err) {

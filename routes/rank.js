@@ -4,10 +4,9 @@ var express = require('express');
 var router = express.Router();
 var async = require('async');
 var models = require('../models');
-var passport = require('passport');
-// var auth = require('./auth');
+var auth = require('./auth');
 
-var resultModel = function(status, reason, data) {
+var resultModel = function (status, reason, data) {
     this.status = status;
     this.reason = reason;
     this.data = data;
@@ -21,52 +20,37 @@ function resultFunc(err, result, res) {
     }
 }
 
+router.get('/ranks', rank);
 
-// playtime으로 sort하는 과정 필요!
-// 랭킹 조회
-router.get('/ranks', ranksList);
-
-// 내 랭킹 조회
-router.get('/myranks/:user_idx', myRank);
-
-function myRank(req, res){
+function rank(req, res) {
     async.waterfall([
-        async.constant(req)
-        , newmyRank
-    ]
-    , function(err, result){
-        resultFunc(err, result, res);
-    })
+            async.constant(req)
+            , auth.isAuth
+            , rankList
+        ]
+        , function (err, result) {
+            resultFunc(err, result, res);
+        })
 }
 
-function newmyRank(req, callback){
-    var user_idx = req.params.user_idx;
-    var data;
-    models.user_info.findById(user_idx).then(function(ret){
-        data = ret;
-        callback(null, data);
-    }, function(err){
-        callback(err);
-    })
-    
-}
-
-function ranksList(req, res){
-    async.waterfall([
-        async.constant(req)
-        ,newranksList
-    ]
-    , function(err, result){
-        resultFunc(err, result, res);
-    })
-}
-
-function newranksList(req, callback){
-    var data;
-    models.user_info.findAll().then(function(ret){
-        data = ret;
-        callback(null, data);
-    }, function(err){
+function rankList(req, callback) {
+    if (req.query.offset == null || req.query.offset == 0) {
+        req.query.offset = 0;
+    } else {
+        req.query.offset--;
+    }
+    var cond = {
+        order: [['user_playtime', 'DESC']]
+        , attributes: ['user_idx', 'user_playtime']
+        , offset: parseInt(req.query.offset)
+        , limit: 10
+    }
+    models.user_info.findAll(cond).then(function (ret) {
+        for (var i in ret) {
+            ret[i].dataValues.rank = cond.offset + ++i;
+        }
+        callback(null, ret);
+    }, function (err) {
         callback(err);
     })
 }
