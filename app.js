@@ -11,6 +11,7 @@ var rank = require('./routes/rank');
 var reward = require('./routes/reward');
 var index = require('./routes/index');
 var members = require('./routes/member');
+var fish = require('./routes/fish');
 
 
 var app = express();
@@ -33,6 +34,7 @@ app.use('/api/0.1v/', rank);
 app.use('/api/0.1v/', reward);
 app.use('/api/0.1v/', index);
 app.use('/api/0.1v/', members);
+app.use('/api/0.1v/', fish);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
