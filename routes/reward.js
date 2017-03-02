@@ -9,7 +9,7 @@ var passport = require('passport');
 
 
 //특정 유저의 리워드 조회
-router.get('/rewards/{:userIdx}', rewardList);
+router.get('/rewards/:userIdx', rewardList);
 
 function rewardList(req,res) {
     
