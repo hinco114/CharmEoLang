@@ -43,7 +43,8 @@ function regisChall(req, res){
     , function (err, result){
         resultFunc(err, result, res);
     })
-} 
+}
+
 
 function newregisChall(req, callback) {
     var chall_info = req.body;
