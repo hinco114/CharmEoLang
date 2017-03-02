@@ -5,6 +5,7 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models');
 var async = require('async');
+var auth = require('./auth');
 
 var resultModel = function (status, reason, data) {
     this.status = status;
@@ -24,7 +25,10 @@ function resultFunc(err, result, res) {
 
 router.post('/members/basic', creBasic);
 router.post('/members/kakao', creKakao);
+router.post('/members/login', login);
 router.get('/members/:user_idx', getUser);
+router.get('/members', getUser);
+
 
 // basic_user 생성 waterfall
 function creBasic(req, res) {
@@ -56,28 +60,48 @@ function creKakao(req, res) {
         })
 }
 
+function login(req, res) {
+    async.waterfall([
+            async.constant(req)
+            , accPw
+            , creToken
+        ]
+        , function (err, result) {
+            resultFunc(err, result, res)
+        })
+}
+
 // 특정유저 정보 얻기 (시간값이 현재 이상하게 리턴되는 현상)
 function getUser(req, res) {
     async.waterfall([
         async.constant(req)
-        , function (req, callback) {
-        models.user_info.findById(req.params.user_idx).then(function (ret) {
-            if(ret==null){
-                callback({message: 'User not found'});
-            }
-            else {
-                callback(null, ret);
-            }
-        }, function (err) {
-            callback(err);
-        })
-    }
-    ], function(err, result) {
+        , auth.isAuth
+        , findUser
+    ], function (err, data, result) {
         resultFunc(err, result, res)
     })
 }
 
 ///////////////////////////////////////////////////////////
+
+function findUser(req, callback) {
+    var target;
+    if(req.params.user_idx == null) {
+        target = req.headers.user_idx;
+    } else {
+        target = req.params.user_idx;
+    }
+    models.user_info.findById(target).then(function (ret) {
+        if (ret == null) {
+            callback({message: 'User not found'});
+        }
+        else {
+            callback(null, req, ret);
+        }
+    }, function (err) {
+        callback(err);
+    })
+}
 
 // BasicID 중복 검사 (중복이면 callback에 에러 전달)
 function existBasicId(req, callback) {
@@ -91,7 +115,6 @@ function existBasicId(req, callback) {
         } else {
             callback({message: 'ID Alread Exist'})
         }
-
     }, function (err) {
         callback(err);
     })
@@ -109,7 +132,6 @@ function existNick(req, callback) { //존재하면 에러. (중복검사의 개�
         } else {
             callback({message: 'Nickname Alread Exist'})
         }
-
     }, function (err) {
         callback(err);
     })
@@ -181,20 +203,50 @@ function updateUserTypeIdx(data, callback) {
     }
 }
 
-// toeken 중복여부 검사 (중복이면 callback에 에러 전달
+// kakao_token 중복여부 검사 (중복이면 callback에 에러 전달
 function existToken(req, callback) {
     var where = {
-        where: {kakao_token : req.body.kakao_token}
-        , attributes : ['kakao_idx']
+        where: {kakao_token: req.body.kakao_token}
+        , attributes: ['kakao_idx']
     };
     models.kakao_user.findOne(where).then(function (ret) {
-        if(ret == null){
+        if (ret == null) {
             callback(null, req)
         } else {
-            callback({message:'Token Already Exist'})
+            callback({message: 'Token Already Exist'})
         }
     })
 }
+
+function accPw(req, callback) {
+    if (req.body.basic_id != null) {
+        var target = {where: {basic_id: req.body.basic_id}};
+        models.basic_user.findOne(target).then(function (ret) {
+            if (req.body.pwval == ret.basic_password) {
+                callback(null, ret);
+            } else {
+                callback({message: 'Login Fail'});
+            }
+        }), function (err) {
+            callback(err);
+        }
+    } else if (req.body.kakao_token != null) {
+        var target = {where: {kakao_token: req.body.kakao_token}};
+        models.kakao_user.findOne(target).then(function (ret) {
+            callback(null, ret);
+        }), function (err) {
+            callback(err);
+        }
+    } else {
+        callback({message: 'Login Fail'});
+    }
+}
+
+function creToken(data, callback) {
+    var decode = auth.signToken(data.user_idx);
+    callback(null, {auth_token: decode});
+}
+
 
 ///////////////////////////////////////////////////////////
 
