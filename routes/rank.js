@@ -20,9 +20,10 @@ function resultFunc(err, result, res) {
     }
 }
 
-router.get('/ranks', rank);
+router.get('/ranks', getRank);
+router.get('ranks/:user_idx', getMyRank);
 
-function rank(req, res) {
+function getRank(req, res) {
     async.waterfall([
             async.constant(req)
             , auth.isAuth
@@ -33,7 +34,19 @@ function rank(req, res) {
         })
 }
 
+function getMyRank(req, res) {
+    async.waterfall([
+            async.constant(req)
+            , auth.isAuth
+            , myRank
+        ]
+        , function (err, result) {
+            resultFunc(err, result, res);
+        })
+}
+
 function rankList(req, callback) {
+    // 오프셋이 1 이면 랭크가 1부터 검색이 되어야함. 따라서 -1 을 해줌 (offset은 0 부터 시작이므로)
     if (req.query.offset == null || req.query.offset == 0) {
         req.query.offset = 0;
     } else {
@@ -55,5 +68,8 @@ function rankList(req, callback) {
     })
 }
 
+function myRank(req, callback) {
+
+}
 
 module.exports = router;
