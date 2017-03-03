@@ -36,7 +36,6 @@ function creBasic(req, res) {
             , existBasicId          // BasicID 중복 검사
             , existNick             // Nickname 중복 검사
             , newBasicUser          // basic_user 생성
-            // , creHash
             , newUser               // user_info 생성
             , updateUserTypeIdx     // basic / kakao db에 user_idx 업데이트
         ]

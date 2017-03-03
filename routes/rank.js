@@ -21,7 +21,7 @@ function resultFunc(err, result, res) {
 }
 
 router.get('/ranks', getRank);
-router.get('ranks/:user_idx', getMyRank);
+router.get('/ranks/:user_idx', getMyRank);
 
 function getRank(req, res) {
     async.waterfall([
@@ -57,7 +57,7 @@ function rankList(req, callback) {
         , attributes: ['user_idx', 'user_playtime']
         , offset: parseInt(req.query.offset)
         , limit: 10
-    }
+    };
     models.user_info.findAll(cond).then(function (ret) {
         for (var i in ret) {
             ret[i].dataValues.rank = cond.offset + ++i;
@@ -69,7 +69,35 @@ function rankList(req, callback) {
 }
 
 function myRank(req, callback) {
-
+    var cond = {
+        order: [['user_playtime', 'DESC']]
+        , attributes: ['user_idx', 'user_playtime']
+        , limit: 10
+    };
+    var data = {user_idx: req.params.user_idx, rank: ''};
+    for (var i = 0; true; i++) {
+        console.log('is loop?');
+        cond.offset = i * 10;
+        models.user_info.findAll(cond).then(function (ret) {
+            for (var k in ret) {
+                console.log(i*10 +k);
+                if (ret[k].user_idx == req.params.user_idx) {
+                    data.rank = i * 10 + k + 1;
+                    console.log('!!!!!');
+                    console.log(data);
+                    break;
+                }
+            }
+        }), function (err) {
+            callback(err);
+        };
+        if(data.rank != ''){
+            console.log('ㅇㅇㅇㅇㅇ');
+            break;
+        }
+    }
+    console.log(data);
+    callback(null, data);
 }
 
 module.exports = router;
