@@ -36,6 +36,7 @@ function creBasic(req, res) {
             , existBasicId          // BasicID 중복 검사
             , existNick             // Nickname 중복 검사
             , newBasicUser          // basic_user 생성
+            // , creHash
             , newUser               // user_info 생성
             , updateUserTypeIdx     // basic / kakao db에 user_idx 업데이트
         ]
@@ -146,7 +147,7 @@ function existNick(req, callback) { //존재하면 에러. (중복검사의 개�
 function newBasicUser(req, callback) {
     var basic = {
         basic_id: req.body.basic_id
-        , basic_password: req.body.basic_password
+        , basic_password: models.basic_user.makePass(req.body.basic_password)
     };
     models.basic_user.create(basic).then(function (ret) {
         var data = {
@@ -227,7 +228,7 @@ function accPw(req, callback) {
     if (req.body.basic_id != null) {
         var target = {where: {basic_id: req.body.basic_id}};
         models.basic_user.findOne(target).then(function (ret) {
-            if (req.body.pwval == ret.basic_password) {
+            if (ret.matchPass(req.body.pwval, ret.basic_password)) {
                 callback(null, ret);
             } else {
                 callback({message: 'Login Fail'});
