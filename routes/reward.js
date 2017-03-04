@@ -67,7 +67,11 @@ function updateMemo(req, callback) {
         models.reward.findById(req.params.reward_idx).then(function (ret) {
             ret.dataValues.fish_memo = req.body.fish_memo;
             ret.save().then(function (result) {
-                callback(null, result);
+                var data = {
+                    reward_idx: result.reward_idx
+                    , fish_memo: result.fish_memo
+                }
+                callback(null, data);
             }), function (err) {
                 callback(err);
             }

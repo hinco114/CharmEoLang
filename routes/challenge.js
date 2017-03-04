@@ -215,6 +215,7 @@ function updatePlaytime(req, data, callback) {
         var time = ret.user_playtime;
         time += data.challenge_playtime;
         ret.user_playtime = time;
+        ret.fish_count += 1;
         ret.save().then(function (ret) {
             delete data.challenge_playtime;
             data.user_playtime = ret.user_playtime;

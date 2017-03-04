@@ -54,7 +54,7 @@ function rankList(req, callback) {
     }
     var cond = {
         order: [['user_playtime', 'DESC']]
-        , attributes: ['user_idx', 'user_playtime']
+        , attributes: ['user_idx', 'user_playtime', 'fish_count']
         , offset: parseInt(req.query.offset)
         , limit: 10
     };
@@ -71,7 +71,7 @@ function rankList(req, callback) {
 function myRank(req, callback) {
     var cond = {
         order: [['user_playtime', 'DESC']]
-        , attributes: ['user_idx', 'user_playtime']
+        , attributes: ['user_idx', 'user_playtime', 'fish_count']
         , limit: 10
     };
     var data = {user_idx: req.params.user_idx, rank: ''};

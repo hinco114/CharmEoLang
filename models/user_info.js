@@ -5,6 +5,7 @@ module.exports = function(sequelize, DataTypes) {
         user_idx : { type : DataTypes.INTEGER.UNSIGNED, primaryKey: true, autoIncrement: true}
         , user_nickname : { type : DataTypes.STRING(45), unique : true}
         , user_playtime : { type : DataTypes.INTEGER.UNSIGNED, defaultValue : 0}
+        , fish_count : { type : DataTypes.INTEGER.UNSIGNED, defaultValue : 0}
         , user_type : { type : DataTypes.STRING(5)}
         , usertype_idx : { type : DataTypes.INTEGER.UNSIGNED}
         , createdAt : { type : DataTypes.DATE}
