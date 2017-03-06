@@ -72,32 +72,19 @@ function myRank(req, callback) {
     var cond = {
         order: [['user_playtime', 'DESC']]
         , attributes: ['user_idx', 'user_playtime', 'fish_count']
-        , limit: 10
     };
     var data = {user_idx: req.params.user_idx, rank: ''};
-    for (var i = 0; true; i++) {
-        console.log('is loop?');
-        cond.offset = i * 10;
-        models.user_info.findAll(cond).then(function (ret) {
-            for (var k in ret) {
-                console.log(i*10 +k);
-                if (ret[k].user_idx == req.params.user_idx) {
-                    data.rank = i * 10 + k + 1;
-                    console.log('!!!!!');
-                    console.log(data);
-                    break;
-                }
+    models.user_info.findAll(cond).then(function (ret) {
+        for (var k in ret) {
+            if (ret[k].user_idx == req.params.user_idx) {
+                data.rank = k + 1;
+                callback(null, data);
+                break;
             }
-        }), function (err) {
-            callback(err);
-        };
-        if(data.rank != ''){
-            console.log('ㅇㅇㅇㅇㅇ');
-            break;
         }
-    }
-    console.log(data);
-    callback(null, data);
+    }), function (err) {
+        callback(err);
+    };
 }
 
 module.exports = router;
