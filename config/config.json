@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "user",
-    "password": "",
-    "database": "",
-    "host": "",
+    "username": "hinco",
+    "password": "myson411",
+    "database": "GANGIME",
+    "host": "hinco-test-db.csrbhqg0mtp2.ap-northeast-2.rds.amazonaws.com",
     "dialect": "mysql",
     "timezone": "Asia/Seoul"
   }

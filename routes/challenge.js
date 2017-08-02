@@ -83,12 +83,13 @@ function newregisChall(req, callback) {
     } else {
         var chall_info = req.body;
         chall_info.user_idx = req.headers.user_idx;
-        models.challenge.create(chall_info).then(function (ret) {
-            var data = {challenge_idx: ret.challenge_idx};
-            callback(null, data);
-        }, function (err) {
-            callback(err.message);
-        })
+        models.challenge.create(chall_info)
+            .then(function (ret) {
+                var data = {challenge_idx: ret.challenge_idx};
+                callback(null, data);
+            }, function (err) {
+                callback(err.message);
+            })
     }
 }
 
